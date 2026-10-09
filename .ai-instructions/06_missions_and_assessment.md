@@ -15,7 +15,8 @@
 
 - Por que o parser ainda consome dois valores no modo `arduino_rasp`?
 - Qual jogador é preservado quando `PONG_BUTTON_PLAYER=1`?
-- Por que o servidor usa uma fábrica em vez de importar `gpiozero`?
+- Por que o servidor usa uma fábrica, mesmo com `gpiozero` sendo uma dependência
+  normal do projeto?
 - O que o debounce evita?
 - Por que a velocidade deve usar o tempo decorrido, e não apenas o número de
   iterações do loop?

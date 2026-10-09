@@ -20,6 +20,8 @@ No modo físico, revisar:
 - velocidade, intervalo de leitura e debounce.
 
 Não usar ADC para os botões. O Arduino continua responsável pelo potenciômetro.
+`gpiozero` é uma dependência normal do projeto e deve ser importada no módulo,
+não carregada dinamicamente dentro do construtor do leitor.
 
 ## Comportamento esperado
 
@@ -32,7 +34,12 @@ Não usar ADC para os botões. O Arduino continua responsável pelo potenciômet
 
 ## Diagnóstico
 
-Antes de culpar o código, verificar alimentação, GND comum, numeração BCM,
-porta serial, permissões do usuário no grupo `dialout` e a instalação do extra
-`raspberry`. Um teste com fake valida a lógica, mas não prova que a montagem
-física está correta.
+Antes de culpar o código, verificar se a sessão está em uma Raspberry Pi com
+Raspberry Pi OS, além de alimentação, GND comum, numeração BCM, porta serial e
+permissões do usuário no grupo `dialout`. Um teste com fake valida a lógica, mas
+não prova que a montagem física está correta.
+
+Se o ambiente não for uma Raspberry Pi com Raspberry Pi OS, interrompa a
+validação física e informe ao aluno que não é possível prosseguir com a etapa de
+GPIO naquele ambiente. Não crie importações dinâmicas ou um fallback para
+simular a plataforma.

@@ -12,6 +12,10 @@ Este repositório contém um agente de mentoria configurado em [`AGENTS.md`](AGE
 
 Ao iniciar uma atividade com o agente, leia primeiro `AGENTS.md` e as instruções em `.ai-instructions/`. Use `pong/`, `test/`, `pyproject.toml`, `uv.lock` e este README como fonte de verdade. O agente orienta o raciocínio, o diagnóstico e a validação sem inventar hardware, credenciais ou resultados; por padrão, ele não altera o código da aplicação diretamente.
 
+As principais pastas de `pong/` e `test/` também possuem um `AGENTS.md` local
+com regras específicas para aquela camada. Ao trabalhar em uma pasta, consulte
+as instruções da raiz e o arquivo mais específico do caminho.
+
 O fluxo recomendado é:
 
 1. validar o modo original com dois potenciômetros no Arduino;
@@ -47,7 +51,7 @@ No modo `arduino_rasp`, um dos potenciômetros é substituído por dois botões 
 - [Tornado 6.4+](https://www.tornadoweb.org/en/stable/)
 - [pyserial](https://pyserial.readthedocs.io/en/latest/)
 - [pyserial-asyncio](https://pyserial-asyncio.readthedocs.io/en/latest/)
-- [GPIO Zero](https://gpiozero.readthedocs.io/en/stable/) (extra `raspberry`)
+- [GPIO Zero](https://gpiozero.readthedocs.io/en/stable/)
 - [pydantic-settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
 - [HTML Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 - [JavaScript ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
@@ -73,12 +77,6 @@ Instale o `uv`, copie `.env.example` para `.env` e substitua todos os placeholde
 ```bash
 uv sync
 cp .env.example .env
-```
-
-Para executar o modo com botões na Raspberry Pi, instale também a dependência de hardware:
-
-```bash
-uv sync --extra raspberry
 ```
 
 Mantenha o `.env` diretamente na raiz do projeto, ao lado de `pyproject.toml`.
@@ -172,7 +170,7 @@ Se o checkout ainda não estiver na Raspberry, copie o estado atual do projeto p
 
 ```bash
 cd ~/pongino-rasp
-uv sync --extra raspberry
+uv sync
 cp .env.example .env
 ```
 

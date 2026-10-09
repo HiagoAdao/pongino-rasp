@@ -26,12 +26,17 @@ preenchido diretamente na Raspberry.
 
 Depois de entrar na Raspberry:
 
-1. instalar ou verificar `uv`, Python 3.12+, Git e suporte a ambiente virtual;
-2. executar `uv sync --extra raspberry`;
+1. instalar ou verificar `uv`, Python 3.12+ e Git;
+2. usar obrigatoriamente `uv sync` para criar o ambiente e instalar as
+   dependências, incluindo `gpiozero`;
 3. criar `.env` a partir de `.env.example`;
-4. executar testes e verificações de qualidade;
-5. iniciar `uv run task run`;
+4. executar testes e verificações de qualidade sempre com `uv run`;
+5. iniciar com `uv run task run`;
 6. acessar a aplicação pelo IP da Raspberry na porta configurada.
+
+Não use `pip`, `poetry`, `python -m venv` ou comandos Python diretos para
+substituir o fluxo definido pelo projeto. Preserve `uv.lock`; alterações nele
+devem ser feitas somente com `uv lock` quando forem necessárias.
 
 Explique o propósito de cada comando antes de fornecê-lo. Não use `sudo` para
 executar a aplicação sem necessidade. Para encerrar, use Ctrl+C na sessão do

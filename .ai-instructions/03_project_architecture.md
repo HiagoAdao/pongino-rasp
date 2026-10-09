@@ -14,7 +14,8 @@ Settings
 
 ## Camadas existentes
 
-- `pong/config.py`: configurações `PONG_*`, incluindo `input_mode`.
+- `pong/config.py`: configurações `PONG_*`, incluindo `input_mode`, representado
+  pelo `InputMode(StrEnum)` com os membros `ARDUINO` e `ARDUINO_RASP`.
 - `pong/domain/`: entidades e normalização, sem dependência de hardware.
 - `pong/infra/input/serial/`: protocolo serial do Arduino e reconexão assíncrona.
 - `pong/infra/input/buttons/`: adaptador GPIO baseado em `gpiozero`.
@@ -46,6 +47,11 @@ a própria fonte cria os leitores durante `start()`.
 ## Regras de dependência
 
 - O domínio não importa `gpiozero`, `serial_asyncio`, Tornado ou código de CLI.
+- O código Python deve comparar modos usando `InputMode.ARDUINO` ou
+  `InputMode.ARDUINO_RASP`; os textos `arduino` e `arduino_rasp` ficam reservados
+  para `.env`, CLI/documentação e fronteiras externas.
 - O servidor depende do contrato de fonte, não de um dispositivo específico.
-- A dependência GPIO deve ser carregada apenas no caminho `arduino_rasp`.
+- `gpiozero` é uma dependência normal e é importada no módulo do adaptador; a
+  criação dos objetos GPIO deve ocorrer somente no modo `arduino_rasp`, durante
+  o `start()` da fonte.
 - Fakes e testes não devem exigir uma Raspberry conectada.
