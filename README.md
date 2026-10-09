@@ -2,9 +2,24 @@
 
 ## Conceito
 
-O projeto demonstra a comunicação entre potenciômetros conectados a um Arduino e uma interface Pong distribuída por HTTP e WebSocket. A aplicação lê amostras pela porta serial, normaliza os valores para percentuais, cria um estado de domínio para as duas raquetes e publica atualizações em tempo real para os navegadores conectados.
+O projeto demonstra a comunicação entre potenciômetros conectados a um Arduino, ou entre um potenciômetro no Arduino e dois botões na Raspberry Pi, com uma interface Pong distribuída por HTTP e WebSocket. A aplicação normaliza as entradas para percentuais, cria um estado de domínio para as duas raquetes e publica atualizações em tempo real para os navegadores conectados.
 
 A fonte serial usa streams assíncronos e tenta reconectar à porta configurada após falhas. O servidor Tornado e a leitura serial compartilham o mesmo event loop do `asyncio`, iniciado por `asyncio.run()`.
+
+## Desenvolvimento orientado por IA
+
+Este repositório contém um agente de mentoria configurado em [`AGENTS.md`](AGENTS.md) e na pasta [`.ai-instructions/`](.ai-instructions/). Ele adapta a abordagem pedagógica do projeto de referência [websocket-jogo-da-velhia](https://github.com/HiagoAdao/websocket-jogo-da-velhia) ao código real do Pongino.
+
+Ao iniciar uma atividade com o agente, leia primeiro `AGENTS.md` e as instruções em `.ai-instructions/`. Use `pong/`, `test/`, `pyproject.toml`, `uv.lock` e este README como fonte de verdade. O agente orienta o raciocínio, o diagnóstico e a validação sem inventar hardware, credenciais ou resultados; por padrão, ele não altera o código da aplicação diretamente.
+
+O fluxo recomendado é:
+
+1. validar o modo original com dois potenciômetros no Arduino;
+2. revisar os protocolos, a configuração e os testes;
+3. preparar a Raspberry Pi e o circuito dos botões;
+4. copiar este checkout para a Raspberry via SSH;
+5. configurar a porta serial, os GPIOs e o modo `arduino_rasp`;
+6. executar os testes e validar o comportamento no hardware.
 
 ## Demonstração
 
@@ -22,6 +37,8 @@ O circuito é composto por um Arduino Uno conectado a dois potenciômetros monta
 - **Potenciômetro 2 (Jogador 2 - Direita):** conectado ao pino analógico `A1`
 - **Alimentação:** pinos `5V` e `GND` do Arduino distribuídos para os barramentos da protoboard
 
+No modo `arduino_rasp`, um dos potenciômetros é substituído por dois botões conectados aos GPIOs da Raspberry Pi. Cada botão deve ser ligado entre o GPIO configurado e o GND. O projeto usa pull-up interno, portanto o botão pressionado corresponde a nível lógico baixo. Os pinos são configurados pela numeração BCM e os sinais devem permanecer em 3,3 V.
+
 ## Tecnologias
 
 ### Execução
@@ -30,6 +47,7 @@ O circuito é composto por um Arduino Uno conectado a dois potenciômetros monta
 - [Tornado 6.4+](https://www.tornadoweb.org/en/stable/)
 - [pyserial](https://pyserial.readthedocs.io/en/latest/)
 - [pyserial-asyncio](https://pyserial-asyncio.readthedocs.io/en/latest/)
+- [GPIO Zero](https://gpiozero.readthedocs.io/en/stable/) (extra `raspberry`)
 - [pydantic-settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
 - [HTML Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 - [JavaScript ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
@@ -57,6 +75,12 @@ uv sync
 cp .env.example .env
 ```
 
+Para executar o modo com botões na Raspberry Pi, instale também a dependência de hardware:
+
+```bash
+uv sync --extra raspberry
+```
+
 Mantenha o `.env` diretamente na raiz do projeto, ao lado de `pyproject.toml`.
 O servidor e o `launch.json` carregam especificamente `${workspaceFolder}/.env`.
 O `uv sync` instala o pacote local no ambiente virtual, portanto não é necessário
@@ -72,6 +96,7 @@ Para usar o Arduino, configure `PONG_SERIAL_PORT`. Exemplos de portas seriais:
 Um `.env` mínimo pode conter:
 
 ```dotenv
+PONG_INPUT_MODE=arduino
 PONG_SERIAL_PORT=/dev/cu.usbmodemXXXX
 PONG_SERIAL_BAUDRATE=115200
 PONG_SERIAL_TIMEOUT_SECONDS=1
@@ -79,9 +104,20 @@ PONG_SERIAL_STARTUP_DELAY_SECONDS=2
 PONG_SERIAL_RECONNECT_DELAY_SECONDS=2
 PONG_POT1_PIN=A0
 PONG_POT2_PIN=A1
+PONG_BUTTON_PLAYER=1
+PONG_BUTTON_UP_PIN=17
+PONG_BUTTON_DOWN_PIN=27
+PONG_BUTTON_POLL_INTERVAL_SECONDS=0.02
+PONG_BUTTON_SPEED_PERCENT_PER_SECOND=160.0
+PONG_BUTTON_DEBOUNCE_SECONDS=0.05
+PONG_BUTTON_INITIAL_PERCENTAGE=50.0
 PONG_SERVER_HOST=0.0.0.0
 PONG_SERVER_PORT=8888
 ```
+
+`PONG_INPUT_MODE=arduino` mantém o comportamento original: os dois valores do Arduino controlam os dois jogadores. Para usar um potenciômetro no Arduino e botões na Raspberry, configure `PONG_INPUT_MODE=arduino_rasp`. Nesse modo, `PONG_BUTTON_PLAYER` define qual jogador é controlado pelos botões; o outro valor do par serial é aproveitado e o canal serial correspondente aos botões é descartado.
+
+Os botões têm comportamento incremental: o botão configurado em `PONG_BUTTON_UP_PIN` reduz o percentual da raquete e o botão em `PONG_BUTTON_DOWN_PIN` aumenta o percentual enquanto permanecer pressionado. `PONG_BUTTON_SPEED_PERCENT_PER_SECOND` controla a velocidade, `PONG_BUTTON_DEBOUNCE_SECONDS` filtra oscilações elétricas e `PONG_BUTTON_INITIAL_PERCENTAGE` define a posição inicial.
 
 A fonte serial usa `PONG_SERIAL_TIMEOUT_SECONDS` para limitar a espera de cada linha, `PONG_SERIAL_STARTUP_DELAY_SECONDS` para aguardar a inicialização do Arduino e `PONG_SERIAL_RECONNECT_DELAY_SECONDS` para controlar o intervalo entre tentativas.
 
@@ -94,6 +130,8 @@ com cada item em uma linha. Os valores analógicos devem estar entre `0` e
 ;
 768
 ```
+
+O formato serial permanece igual nos dois modos. No modo `arduino_rasp`, os dois valores continuam sendo consumidos para manter o sincronismo do stream, mas somente o valor do jogador que permanece no Arduino é usado no estado final.
 
 Inicie o servidor:
 
@@ -121,6 +159,45 @@ O diagnóstico usa Rich com tabela e barras atualizadas em tempo real. Rich pert
 ```bash
 uv run task cli
 ```
+
+### Executar na Raspberry Pi via SSH
+
+Na máquina de desenvolvimento, conecte-se usando o endereço e o usuário reais da Raspberry:
+
+```bash
+ssh <usuario>@<ip-da-raspberry>
+```
+
+Se o checkout ainda não estiver na Raspberry, copie o estado atual do projeto por `rsync` ou `scp`. Não copie `.env`, `.venv`, caches, chaves ou credenciais. Na Raspberry, instale as dependências e configure o ambiente:
+
+```bash
+cd ~/pongino-rasp
+uv sync --extra raspberry
+cp .env.example .env
+```
+
+Para o modo com um potenciômetro no Arduino e dois botões na Raspberry, use no `.env`:
+
+```dotenv
+PONG_INPUT_MODE=arduino_rasp
+PONG_SERIAL_PORT=/dev/ttyACM0
+PONG_BUTTON_PLAYER=1
+PONG_BUTTON_UP_PIN=17
+PONG_BUTTON_DOWN_PIN=27
+PONG_SERVER_HOST=0.0.0.0
+PONG_SERVER_PORT=8888
+```
+
+Valide a instalação antes de iniciar o jogo:
+
+```bash
+uv run task test
+uv run task lint
+uv run task type-check
+uv run task run
+```
+
+Depois, acesse `http://<ip-da-raspberry>:8888`. Os GPIOs usam numeração BCM; cada botão deve ser conectado entre o GPIO configurado e o GND. Não aplique 5 V aos GPIOs. O Arduino continua enviando os dois valores seriais, mas o modo híbrido consome ambos para manter o sincronismo e utiliza apenas o canal do potenciômetro que não foi substituído pelos botões.
 
 Os comandos de qualidade são:
 
@@ -168,6 +245,13 @@ Uma mensagem de atualização de raquete tem este formato:
 ├── .env.example
 ├── .vscode/
 │   └── launch.json
+├── .ai-instructions/
+│   ├── 01_role_and_policy.md
+│   ├── 02_cognitive_framework.md
+│   ├── 03_project_architecture.md
+│   ├── 04_raspberry_hardware.md
+│   ├── 05_ssh_and_operations.md
+│   └── 06_missions_and_assessment.md
 ├── AGENTS.md
 ├── README.md
 ├── docs/
@@ -215,10 +299,21 @@ Uma mensagem de atualização de raquete tem este formato:
 │   │   ├── __init__.py
 │   │   └── input/
 │   │       ├── __init__.py
+│   │       ├── arduino_rasp/
+│   │       │   ├── __init__.py
+│   │       │   └── source.py
+│   │       ├── buttons/
+│   │       │   ├── __init__.py
+│   │       │   └── gpio.py
+│   │       ├── factory.py
 │   │       └── serial/
 │   │           ├── __init__.py
 │   │           ├── parser.py
 │   │           └── source.py
+│   ├── protocols/
+│   │   ├── __init__.py
+│   │   ├── button_reader.py
+│   │   └── input_source.py
 │   └── web/
 │       ├── index.html
 │       ├── static/
@@ -244,11 +339,12 @@ versionado.
 O fluxo da aplicação é:
 
 1. `Settings` carrega as variáveis de ambiente com o prefixo `PONG_`.
-2. `SerialInputSource` lê o Arduino em uma tarefa assíncrona e reconecta após falhas.
+2. A fábrica seleciona exclusivamente `SerialInputSource` ou `ArduinoRaspInputSource` conforme `PONG_INPUT_MODE`.
 3. `PotStreamParser` valida a sequência serial e transforma valores ADC em percentuais.
-4. O domínio cria um `PongState` para os dois jogadores.
-5. `ConnectionManager` transmite o estado para cada WebSocket conectado.
-6. Os módulos JavaScript atualizam as raquetes e os indicadores da interface.
+4. No modo `arduino_rasp`, a fonte combina o jogador serial com o movimento incremental dos botões GPIO.
+5. O domínio cria um `PongState` para os dois jogadores.
+6. `ConnectionManager` transmite o estado para cada WebSocket conectado.
+7. Os módulos JavaScript atualizam as raquetes e os indicadores da interface.
 
 ## Frontend e Tailwind
 
