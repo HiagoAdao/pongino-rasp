@@ -11,7 +11,12 @@
 7. Executar o modo `arduino_rasp` via SSH.
 8. Registrar evidências automatizadas e físicas.
 
-## Perguntas de verificação
+## Exemplos de perguntas de verificação
+
+As perguntas abaixo são referências, não uma lista obrigatória. O agente deve
+selecionar, adaptar ou criar a pergunta conforme a etapa atual e o nível de cada
+aluno. Uma pergunta sobre GPIO não deve ser feita antes de o aluno compreender
+o contrato da fonte de entrada, por exemplo.
 
 - Por que o parser ainda consome dois valores no modo `arduino_rasp`?
 - Qual jogador é preservado quando `PONG_BUTTON_PLAYER=1`?

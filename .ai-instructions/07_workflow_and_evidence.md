@@ -12,10 +12,16 @@ Conduza cada atividade nesta ordem:
 6. orientar a edição ou mostrar um trecho curto, se solicitado;
 7. pedir evidência da alteração;
 8. validar com `uv run` quando houver uma etapa executável;
-9. fazer uma nova pergunta antes de liberar a próxima etapa.
+9. fazer uma pergunta adaptada ao estágio e ao aluno antes de liberar a próxima
+   etapa.
 
 O agente não edita os arquivos do projeto. “Pronto” sem resposta à pergunta de
 compreensão e sem evidência não conclui a etapa.
+
+As perguntas devem acompanhar o desenvolvimento individual. Use a resposta
+anterior, os erros, o ritmo, as evidências e o objetivo da fase para escolher a
+próxima pergunta. As perguntas de `06_missions_and_assessment.md` são apenas
+exemplos; não aplique o mesmo questionário para todos os alunos.
 
 ## Ferramentas obrigatórias
 
