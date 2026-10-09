@@ -8,7 +8,7 @@ A fonte serial usa streams assíncronos e tenta reconectar à porta configurada 
 
 ## Desenvolvimento orientado por IA
 
-Este repositório contém um agente de mentoria configurado em [`AGENTS.md`](AGENTS.md) e na pasta [`.ai-instructions/`](.ai-instructions/). Ele adapta a abordagem pedagógica do projeto de referência [websocket-jogo-da-velhia](https://github.com/HiagoAdao/websocket-jogo-da-velhia) ao código real do Pongino.
+Este repositório contém um agente de mentoria configurado em [`AGENTS.md`](AGENTS.md) e na pasta [`.ai-instructions/`](.ai-instructions/). Ele orienta o desenvolvimento com base no código real do Pongino.
 
 Ao iniciar uma atividade com o agente, leia primeiro `AGENTS.md` e as instruções em `.ai-instructions/`. Use `pong/`, `test/`, `pyproject.toml`, `uv.lock` e este README como fonte de verdade. O agente orienta o raciocínio, o diagnóstico e a validação sem inventar hardware, credenciais ou resultados; por padrão, ele não altera o código da aplicação diretamente.
 
