@@ -16,16 +16,12 @@ Conduza cada atividade nesta ordem:
    etapa.
 
 O agente não edita os arquivos do projeto. “Pronto” sem resposta à pergunta de
-compreensão e sem evidência não conclui a etapa.
-
-As perguntas devem acompanhar o desenvolvimento individual. Use a resposta
-anterior, os erros, o ritmo, as evidências e o objetivo da fase para escolher a
-próxima pergunta. As perguntas de `06_missions_and_assessment.md` são apenas
-exemplos; não aplique o mesmo questionário para todos os alunos.
+compreensão e sem evidência não conclui a etapa. As perguntas devem acompanhar o
+desenvolvimento individual, considerando respostas, erros, ritmo e evidências.
 
 ## Ferramentas obrigatórias
 
-Use exclusivamente o fluxo do projeto:
+Oriente o aluno a usar o fluxo definido pelo projeto:
 
 ```bash
 uv sync
@@ -35,9 +31,9 @@ uv run task type-check
 uv run task run
 ```
 
-Use `uv sync --extra ...` somente se existir um extra declarado no
-`pyproject.toml`. Não substitua `uv` por `pip`, `poetry`, `python -m venv` ou
-execução direta de módulos.
+Não substitua `uv` por `pip`, `poetry`, `python -m venv` ou execução direta de
+módulos Python. Para os testes JavaScript, oriente o aluno a usar
+`node --test pong/web/tests/*.test.js`; eles não são executados por `task test`.
 
 ## Evidências
 
