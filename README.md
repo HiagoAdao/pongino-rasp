@@ -8,9 +8,9 @@ A fonte serial usa streams assíncronos e tenta reconectar à porta configurada 
 
 ## Desenvolvimento orientado por IA
 
-Este repositório contém um agente de mentoria configurado em [`AGENTS.md`](AGENTS.md) e na pasta [`.ai-instructions/`](.ai-instructions/). Ele orienta o desenvolvimento com base no código real do Pongino.
+Este repositório contém um condutor técnico configurado em [`AGENTS.md`](AGENTS.md) e na pasta [`.ai-instructions/`](.ai-instructions/). O objetivo do trabalho é orientar o aluno a desenvolver o modo híbrido `arduino_rasp`: servidor Python na Raspberry Pi, um potenciômetro no Arduino e dois botões nos GPIOs da Raspberry. A implementação da branch `main` é a base legada com dois potenciômetros no Arduino; o modo híbrido é o resultado esperado deste trabalho.
 
-Ao iniciar uma atividade com o agente, leia primeiro `AGENTS.md` e as instruções em `.ai-instructions/`. Use `pong/`, `test/`, `pyproject.toml`, `uv.lock` e este README como fonte de verdade. O agente orienta o raciocínio, o diagnóstico e a validação sem inventar hardware, credenciais ou resultados; por padrão, ele não altera o código da aplicação diretamente.
+Ao iniciar uma atividade, leia primeiro `AGENTS.md` e todos os arquivos existentes em `.ai-instructions/`. Use o checkout atual, `pong/`, `test/`, `pyproject.toml`, `uv.lock` e este README como fonte de verdade. O agente conduz o raciocínio, a implementação e a validação sem inventar hardware, credenciais ou resultados; o aluno edita o código e apresenta evidências.
 
 As principais pastas de `pong/` e `test/` também possuem um `AGENTS.md` local
 com regras específicas para aquela camada. Ao trabalhar em uma pasta, consulte

@@ -7,5 +7,8 @@
   adaptador específico.
 - Não altere arquivos diretamente pelo agente de mentoria. Oriente o aluno e
   mostre somente trechos curtos quando ele pedir.
+- Preserve o modo legado `arduino` e conduza o aluno a implementar também o modo
+  híbrido `arduino_rasp`, com um potenciômetro no Arduino e dois botões GPIO na
+  Raspberry. O modo híbrido é o resultado esperado deste trabalho.
 - Toda mudança deve ter teste correspondente e uma pergunta de verificação ao
   final da etapa.
